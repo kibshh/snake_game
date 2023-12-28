@@ -20,17 +20,24 @@ screen.onkey(snake.up, "Up")
 screen.onkey(snake.down,"Down")
 screen.onkey(snake.left,"Left")
 screen.onkey(snake.right,"Right")
+screen.onkey(scoreboard.game_over, "q")
+
 
 game_on = True
 while game_on:
+    if scoreboard.game_over_flag:
+        snake.game_over()
+        game_on = False
+        screen.update()
+        continue
     screen.update()
     time.sleep(config.GAME_SPEED)
     snake.move()
 
     if (snake.head.xcor() > config.SCREEN_WIDTH / 2 or snake.head.xcor() < -(config.SCREEN_WIDTH / 2)
             or snake.head.ycor() > (config.SCREEN_HEIGHT / 2) or snake.head.ycor() < -(config.SCREEN_HEIGHT / 2)):
-        game_on = False
-        scoreboard.game_over()
+        scoreboard.reset_score()
+        snake.reset()
         continue
 
     if snake.head.distance(food) < 20:
@@ -40,7 +47,7 @@ while game_on:
 
     for seg in snake.segments[1:]:
         if snake.head.distance(seg) < 15:
-            game_on = False
-            scoreboard.game_over()
+            scoreboard.reset_score()
+            snake.reset()
 
 screen.exitonclick()
